@@ -1,0 +1,128 @@
+version: "3.8"
+
+services:
+  hsa1012-node-app:
+    container_name: hsa1012-node-app
+    build: ./src
+    ports:
+      - 8083:8083
+    networks:
+      redis-hsa1012:
+        ipv4_address: 173.20.0.9
+    depends_on:
+      - hsa1012-redis-node-1
+      - hsa1012-redis-node-2
+      - hsa1012-redis-node-3
+      - hsa1012-redis-node-4
+      - hsa1012-redis-node-5
+      - hsa1012-redis-node-6
+      - hsa1012-redis-cluster
+
+  hsa1012-redis-cluster:
+    container_name: hsa1012-redis-cluster
+    image: redis:alpine3.18
+    command: redis-cli --cluster create 173.20.0.3:6373 173.20.0.4:6373 173.20.0.5:6373 173.20.0.6:6373 173.20.0.7:6373 173.20.0.8:6373 --cluster-replicas 1 --cluster-yes
+    networks:
+      redis-hsa1012:
+        ipv4_address: 173.20.0.2
+    depends_on:
+      - hsa1012-redis-node-1
+      - hsa1012-redis-node-2
+      - hsa1012-redis-node-3
+      - hsa1012-redis-node-4
+      - hsa1012-redis-node-5
+      - hsa1012-redis-node-6
+
+  hsa1012-redis-node-1:
+    container_name: hsa1012-redis-node-1
+    image: redis:alpine3.18
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - 6373:6373
+    volumes:
+      - hsa1012-redis-node-1-data:/var/lib/redis
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      redis-hsa1012:
+        ipv4_address: 173.20.0.3
+
+  hsa1012-redis-node-2:
+    container_name: hsa1012-redis-node-2
+    image: redis:alpine3.18
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - 6374:6373
+    volumes:
+      - hsa1012-redis-node-2-data:/var/lib/redis
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      redis-hsa1012:
+        ipv4_address: 173.20.0.4
+
+  hsa1012-redis-node-3:
+    container_name: hsa1012-redis-node-3
+    image: redis:alpine3.18
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - 6375:6373
+    volumes:
+      - hsa1012-redis-node-3-data:/var/lib/redis
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      redis-hsa1012:
+        ipv4_address: 173.20.0.5
+  
+  hsa1012-redis-node-4:
+    container_name: hsa1012-redis-node-4
+    image: redis:alpine3.18
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - 6376:6373
+    volumes:
+      - hsa1012-redis-node-4-data:/var/lib/redis
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      redis-hsa1012:
+        ipv4_address: 173.20.0.6
+
+  hsa1012-redis-node-5:
+    container_name: hsa1012-redis-node-5
+    image: redis:alpine3.18
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - 6377:6373
+    volumes:
+      - hsa1012-redis-node-5-data:/var/lib/redis
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      redis-hsa1012:
+        ipv4_address: 173.20.0.7
+
+  hsa1012-redis-node-6:
+    container_name: hsa1012-redis-node-6
+    image: redis:alpine3.18
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - 6378:6373
+    volumes:
+      - hsa1012-redis-node-6-data:/var/lib/redis
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      redis-hsa1012:
+        ipv4_address: 173.20.0.8
+
+volumes:
+  hsa1012-redis-node-1-data:
+  hsa1012-redis-node-2-data:
+  hsa1012-redis-node-3-data:
+  hsa1012-redis-node-4-data:
+  hsa1012-redis-node-5-data:
+  hsa1012-redis-node-6-data:
+  hsa1012-redisinsight-data:
+
+networks:
+  redis-hsa1012:
+    driver: bridge
+    ipam: 
+      config:
+        - subnet: 173.20.0.0/24

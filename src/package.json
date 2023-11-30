@@ -1,0 +1,13 @@
+{
+  "name": "src",
+  "version": "1.0.0",
+  "description": "Redis maxmemory-policy",
+  "main": "index.js",
+  "scripts": {},
+  "author": "Nazarii Spikhalskyi <nazarii.spikhalskyi@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "ioredis": "^5.3.2"
+  }
+}
